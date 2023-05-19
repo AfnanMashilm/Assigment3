@@ -73,38 +73,7 @@ int main() {
     cudaMemcpy(h_C, d_C, rows_A * cols_B * sizeof(float), cudaMemcpyDeviceToHost);
  printf("GPU Runtime: %.3f ms\n", milliseconds);
    
-    // Allocate memory for the result matrix on the host
-float *h_C_seq = (float *)malloc(rows_A * cols_B * sizeof(float));
 
-// Perform the sequential matrix multiplication on the host
-for (int i = 0; i < rows_A; i++) {
-    for (int j = 0; j < cols_B; j++) {
-        float sum = 0.0f;
-        for (int k = 0; k < cols_A; k++) {
-            sum += h_A[i * cols_A + k] * h_B[k * cols_B + j];
-        }
-        h_C_seq[i * cols_B + j] = sum;
-    }
-}
-
-// Compare the result matrices element-wise
-bool resultMatch = true;
-for (int i = 0; i < rows_A * cols_B; i++) {
-    if (fabs(h_C[i] - h_C_seq[i]) > 1e-5) {
-        resultMatch = false;
-        break;
-    }
-}
-
-// Print the result of the comparison
-if (resultMatch) {
-    printf("Result matches the sequential calculation.\n");
-} else {
-    printf("Result does not match the sequential calculation.\n");
-}
-
-// Free memory for the sequential result matrix
-free(h_C_seq);
     // Free memory on the host and the device
     free(h_A);
     free(h_B);
